@@ -6,6 +6,7 @@
  * per process
  */
 using System;
+using System.Collections.Generic;
 
 namespace Snowflake.Net.Core
 {
@@ -95,6 +96,16 @@ namespace Snowflake.Net.Core
                 _lastTimestamp = timestamp;
                 return ((timestamp - Twepoch) << TimestampLeftShift) | (DatacenterId << DatacenterIdShift) | (WorkerId << WorkerIdShift) | _sequence;
             }
+        }
+
+        public virtual IEnumerable<long> Next(int number)
+        {
+            var list = new List<long>();   
+            for (var i = 0; i < number; i++)
+            {
+                list.Add(NextId());
+            }
+            return list;
         }
 
         // 防止产生的时间比之前的时间还要小（由于NTP回拨等问题）,保持增量的趋势.
